@@ -1,0 +1,45 @@
+# Pipeline DVC — Détection de Tweets Suspects
+# Ce fichier définit les étapes du pipeline reproductible
+
+stages:
+
+  # Étape 1 : Prétraitement
+  preprocess:
+    cmd: python src/preprocess.py
+    deps:
+      - src/preprocess.py
+      - data/raw/tweets_suspect.csv
+    params:
+      - preprocessing
+      - data.text_col
+      - data.label_col
+    outs:
+      - data/processed/tweets_clean.csv
+
+  # Étape 2 : Entraînement
+  train:
+    cmd: python src/train.py
+    deps:
+      - src/train.py
+      - data/processed/tweets_clean.csv
+    params:
+      - tfidf
+      - model
+      - data.test_size
+      - data.random_state
+    outs:
+      - models/model.pkl
+      - models/vectorizer.pkl
+      - data/processed/test_data.csv
+
+  # Étape 3 : Évaluation
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+      - src/evaluate.py
+      - models/model.pkl
+      - models/vectorizer.pkl
+      - data/processed/test_data.csv
+    metrics:
+      - reports/metrics.json:
+          cache: false
