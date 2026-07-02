@@ -38,7 +38,7 @@ stages:
       size: 80689
     - path: models/vectorizer.pkl
       hash: md5
-      md5: 05b4e747e36346eb0cce7c1473a8d9c1
+      md5: eb2eca21ff596b6bc6a41f8f139c45be
       size: 378054
   evaluate:
     cmd: python src/evaluate.py
@@ -53,7 +53,7 @@ stages:
       size: 80689
     - path: models/vectorizer.pkl
       hash: md5
-      md5: 05b4e747e36346eb0cce7c1473a8d9c1
+      md5: eb2eca21ff596b6bc6a41f8f139c45be
       size: 378054
     - path: src/evaluate.py
       hash: md5
