@@ -6,21 +6,14 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 
-# Telechargement des ressources NLTK
 nltk.download('stopwords', quiet=True)
 nltk.download('punkt', quiet=True)
 nltk.download('punkt_tab', quiet=True)
 nltk.download('wordnet', quiet=True)
 nltk.download('omw-1.4', quiet=True)
 
-# Configuration de la page
-st.set_page_config(
-    page_title='Detection de Tweets Suspects',
-    page_icon='🔍',
-    layout='centered'
-)
+st.set_page_config(page_title='Detection de Tweets Suspects', page_icon='🔍', layout='centered')
 
-# Chargement du modele et du vectorizer
 @st.cache_resource
 def load_model():
     with open('models/best_model_final.pkl', 'rb') as f:
@@ -29,7 +22,6 @@ def load_model():
         vectorizer = pickle.load(f)
     return model, vectorizer
 
-# Fonction de nettoyage du texte
 STOP_WORDS = set(stopwords.words('english')) | set(stopwords.words('french'))
 lemmatizer = WordNetLemmatizer()
 
@@ -41,31 +33,16 @@ def clean_tweet(text: str) -> str:
     text = re.sub(r'[^\w\s]', ' ', text)
     text = re.sub(r'\b\d+\b', '', text)
     tokens = word_tokenize(text)
-    tokens = [
-        lemmatizer.lemmatize(tok)
-        for tok in tokens
-        if tok not in STOP_WORDS and len(tok) > 2
-    ]
+    tokens = [lemmatizer.lemmatize(tok) for tok in tokens if tok not in STOP_WORDS and len(tok) > 2]
     return ' '.join(tokens)
 
-# Interface principale
 st.title('🔍 Detection de Tweets Suspects')
 st.markdown('---')
-st.markdown(
-    'Cette application utilise un modele de Machine Learning '
-    'pour detecter si un tweet est **suspect** ou **normal**.'
-)
+st.markdown('Cette application analyse le **sentiment** des tweets. Un tweet negatif/haineux est **suspect**, un tweet positif/normal est **normal**.')
 
-# Zone de saisie
 st.subheader('Entrez votre tweet :')
-tweet_input = st.text_area(
-    label='Tweet',
-    placeholder='Exemple : Buy followers now! Click here http://spam.com',
-    height=120,
-    label_visibility='collapsed'
-)
+tweet_input = st.text_area(label='Tweet', placeholder='Exemple : I hate everything today, so sad...', height=120, label_visibility='collapsed')
 
-# Bouton de prediction
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     predict_btn = st.button('Analyser le tweet', use_container_width=True, type='primary')
@@ -79,55 +56,43 @@ if predict_btn:
             tweet_clean = clean_tweet(tweet_input)
             tweet_vec   = vectorizer.transform([tweet_clean])
             prediction  = model.predict(tweet_vec)[0]
-
-            # Probabilite (si disponible)
             if hasattr(model, 'predict_proba'):
                 proba = model.predict_proba(tweet_vec)[0]
-                prob_suspect = proba[1] * 100
-                prob_normal  = proba[0] * 100
+                prob_negatif = proba[0] * 100
+                prob_positif = proba[1] * 100
             else:
-                prob_suspect = 85.0 if prediction == 1 else 15.0
-                prob_normal  = 100 - prob_suspect
-
+                prob_negatif = 85.0 if prediction == 0 else 15.0
+                prob_positif = 100 - prob_negatif
         st.markdown('---')
-
-        if prediction == 1:
-            st.error('⚠️ TWEET SUSPECT')
-            st.markdown(f'**Probabilite d etre suspect : {prob_suspect:.1f}%**')
-            st.progress(prob_suspect / 100)
+        if prediction == 0:
+            st.error('⚠️ TWEET SUSPECT (Sentiment Negatif)')
+            st.markdown(f'**Probabilite d etre negatif/suspect : {prob_negatif:.1f}%**')
+            st.progress(prob_negatif / 100)
         else:
-            st.success('✅ TWEET NORMAL')
-            st.markdown(f'**Probabilite d etre normal : {prob_normal:.1f}%**')
-            st.progress(prob_normal / 100)
-
-        # Details
+            st.success('✅ TWEET NORMAL (Sentiment Positif)')
+            st.markdown(f'**Probabilite d etre positif/normal : {prob_positif:.1f}%**')
+            st.progress(prob_positif / 100)
         with st.expander('Details de l analyse'):
             st.write(f'**Tweet original :** {tweet_input}')
             st.write(f'**Tweet nettoyé :** {tweet_clean}')
-            st.write(f'**Prediction :** {"Suspect (1)" if prediction == 1 else "Normal (0)"}')
+            st.write(f'**Prediction :** {"Suspect/Negatif (0)" if prediction == 0 else "Normal/Positif (1)"}')
             if hasattr(model, 'predict_proba'):
-                st.write(f'**Probabilite Normal  :** {prob_normal:.2f}%')
-                st.write(f'**Probabilite Suspect :** {prob_suspect:.2f}%')
+                st.write(f'**Prob. Normal/Positif  :** {prob_positif:.2f}%')
+                st.write(f'**Prob. Suspect/Negatif :** {prob_negatif:.2f}%')
 
 st.markdown('---')
-
-# Exemples de tweets
 st.subheader('Exemples de tweets a tester :')
 col1, col2 = st.columns(2)
-
 with col1:
-    st.markdown('**Tweets Suspects :**')
-    st.code('BUY FOLLOWERS NOW!!! Click http://spam.com')
-    st.code('@everyone FREE IPHONE just click here!!!')
-    st.code('Get 10000 followers fast → http://bot.com')
-
+    st.markdown('**Tweets Suspects (Negatifs) :**')
+    st.code('I hate everything today, so depressed')
+    st.code('This is the worst day of my life!!!')
+    st.code('I am so angry I could scream right now')
 with col2:
-    st.markdown('**Tweets Normaux :**')
+    st.markdown('**Tweets Normaux (Positifs) :**')
     st.code('Good morning everyone! Have a great day')
     st.code('Just watched an amazing movie tonight')
     st.code('Feeling happy today, life is beautiful')
-
-# Sidebar avec infos
 with st.sidebar:
     st.title('Informations')
     st.markdown('**Projet :** Detection de Tweets Suspects')
@@ -135,7 +100,8 @@ with st.sidebar:
     st.markdown('**Encadrant :** Dr. Abdoul Kader KABORE')
     st.markdown('**Annee :** 2026')
     st.markdown('---')
-    st.markdown('**Modele utilise :** Random Forest')
-    st.markdown('**Representation :** TF-IDF')
-    st.markdown('**Dataset :** 60 000 tweets')
+    st.markdown('**Dataset :** Sentiment140 (60 000 tweets)')
+    st.markdown('**Modele :** Random Forest optimise')
     st.markdown('**F1-Score :** ~98.98%')
+    st.markdown('---')
+    st.info('Label 0 = Negatif/Suspect\nLabel 1 = Positif/Normal')
