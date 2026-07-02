@@ -8,10 +8,15 @@ venv/
 # Jupyter
 .ipynb_checkpoints/
 
-# DVC
+# DVC (gere par DVC, pas par Git)
 /data/raw/
 /data/processed/
 /models/
+
+# Autoriser les fichiers .dvc (necessaires pour Git)
+!data/raw/*.dvc
+!data/processed/*.dvc
+!models/*.dvc
 
 # Reports
 reports/figures/*.png

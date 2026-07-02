@@ -1,4 +1,3 @@
-
 import pandas as pd
 import re
 import nltk
@@ -7,14 +6,12 @@ from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 import os
 
-# Téléchargement des ressources NLTK
 nltk.download("stopwords", quiet=True)
 nltk.download("punkt", quiet=True)
 nltk.download("punkt_tab", quiet=True)
 nltk.download("wordnet", quiet=True)
 nltk.download("omw-1.4", quiet=True)
 
-# Configuration
 INPUT_PATH  = "data/raw/tweets_suspect.csv"
 OUTPUT_PATH = "data/processed/tweets_clean.csv"
 TEXT_COL    = "message"

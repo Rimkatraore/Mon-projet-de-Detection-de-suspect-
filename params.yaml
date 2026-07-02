@@ -1,6 +1,3 @@
-# Hyperparamètres du projet
-# Modifier ces valeurs pour changer le comportement du pipeline
-
 data:
   text_col: message
   label_col: label
