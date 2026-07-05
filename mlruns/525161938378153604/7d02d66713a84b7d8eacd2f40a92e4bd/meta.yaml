@@ -1,0 +1,14 @@
+artifact_uri: file:C:/Users/user/Desktop/Mon projet de Detection de suspect/mlruns/525161938378153604/7d02d66713a84b7d8eacd2f40a92e4bd/artifacts
+end_time: 1783277343854
+entry_point_name: ''
+experiment_id: '525161938378153604'
+lifecycle_stage: active
+run_id: 7d02d66713a84b7d8eacd2f40a92e4bd
+run_name: RandomForest
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1783277288806
+status: 3
+tags: []
+user_id: user

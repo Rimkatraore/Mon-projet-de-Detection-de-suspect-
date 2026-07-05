@@ -1,0 +1,14 @@
+artifact_uri: file:C:/Users/user/Desktop/Mon projet de Detection de suspect/mlruns/525161938378153604/393755fb716249b8ba522fb319dc6da3/artifacts
+end_time: 1783277371460
+entry_point_name: ''
+experiment_id: '525161938378153604'
+lifecycle_stage: active
+run_id: 393755fb716249b8ba522fb319dc6da3
+run_name: SVM_LinearSVC
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1783277343900
+status: 3
+tags: []
+user_id: user

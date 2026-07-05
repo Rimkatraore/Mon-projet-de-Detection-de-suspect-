@@ -1,0 +1,9 @@
+artifact_location: file:C:/Users/user/Desktop/Mon projet de Detection de suspect/mlruns/525161938378153604
+creation_time: 1783277197297
+effective_trace_archival_retention: null
+experiment_id: '525161938378153604'
+last_update_time: 1783277197297
+lifecycle_stage: active
+name: Detection_Tweets_Suspects
+trace_location: null
+workspace: default

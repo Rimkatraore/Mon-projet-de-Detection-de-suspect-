@@ -1,0 +1,23 @@
+artifact_path: file:C:/Users/user/Desktop/Mon projet de Detection de suspect/mlruns/525161938378153604/models/m-b4912446b1c74e819850d0f87d057d7f/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.skops
+    predict_fn: predict
+    python_version: 3.14.3
+  sklearn:
+    code: null
+    pickled_model: model.skops
+    serialization_format: skops
+    sklearn_version: 1.9.0
+    skops_trusted_types: null
+mlflow_version: 3.14.0
+model_id: m-b4912446b1c74e819850d0f87d057d7f
+model_size_bytes: 89090
+model_uuid: m-b4912446b1c74e819850d0f87d057d7f
+prompts: null
+run_id: 74af759529e5498eb8daf563e57392fe
+utc_time_created: '2026-07-05 18:46:55.038231'
