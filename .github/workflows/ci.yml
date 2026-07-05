@@ -12,44 +12,51 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+
     - name: Set up Python 3.11
       uses: actions/setup-python@v4
       with:
-        python-version: "3.11"
+        python-version: '3.11'
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install pandas numpy scikit-learn nltk
+
     - name: Download NLTK resources
-      run: python -c "import nltk; nltk.download(chr(39)+'stopwords'+chr(39)); nltk.download(chr(39)+'punkt'+chr(39)); nltk.download(chr(39)+'wordnet'+chr(39))"
-    - name: Test preprocessing pipeline
+      run: |
+        python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt'); nltk.download('wordnet')"
+
+    - name: Test preprocessing
       run: |
         python -c "
-        import re
-        from nltk.corpus import stopwords
-        from nltk.stem import WordNetLemmatizer
-        STOP = set(stopwords.words(chr(39)+'english'+chr(39)))
-        lem = WordNetLemmatizer()
-        def clean(t):
-            t = t.lower()
-            t = re.sub(r'http\S+', '', t)
-            t = re.sub(r'[^\w\s]', ' ', t)
-            return ' '.join([lem.lemmatize(w) for w in t.split() if w not in STOP and len(w)>2])
-        r = clean('Hello World! http://spam.com @user')
-        assert len(r) > 0
-        print('Test preprocessing OK')
+import re
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+STOP = set(stopwords.words('english'))
+lem = WordNetLemmatizer()
+def clean(t):
+    t = t.lower()
+    t = re.sub(r'http\S+', '', t)
+    t = re.sub(r'[^\w\s]', ' ', t)
+    return ' '.join([lem.lemmatize(w) for w in t.split() if w not in STOP and len(w)>2])
+r = clean('Hello World! http://spam.com')
+assert len(r) > 0, 'Preprocessing failed'
+print('Test preprocessing OK !')
         "
-    - name: Test TF-IDF vectorization
+
+    - name: Test vectorization
       run: |
         python -c "
-        from sklearn.feature_extraction.text import TfidfVectorizer
-        from sklearn.linear_model import LogisticRegression
-        v = TfidfVectorizer(max_features=100)
-        X = v.fit_transform(['hello world', 'test tweet', 'good morning'])
-        assert X.shape[0] == 3
-        m = LogisticRegression().fit(X, [0,1,0])
-        assert len(m.predict(X)) == 3
-        print('Test model OK')
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+v = TfidfVectorizer(max_features=100)
+X = v.fit_transform(['hello world', 'test tweet', 'good morning'])
+assert X.shape[0] == 3
+m = LogisticRegression().fit(X, [0, 1, 0])
+assert len(m.predict(X)) == 3
+print('Test vectorization OK !')
         "
+
     - name: All tests passed
-      run: echo All CI tests passed
+      run: echo 'Tous les tests CI ont reussi !'
