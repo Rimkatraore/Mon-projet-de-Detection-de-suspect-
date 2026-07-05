@@ -1,0 +1,10 @@
+artifact_location: file:C:/Users/user/Desktop/Mon projet de Detection de suspect/mlruns/525161938378153604/models/m-b24c8c60cbb04c6d8954ab26214ae84e/artifacts
+creation_timestamp: 1783278294246
+experiment_id: '525161938378153604'
+last_updated_timestamp: 1783278330200
+model_id: m-b24c8c60cbb04c6d8954ab26214ae84e
+model_type: null
+name: SVM_LinearSVC
+source_run_id: 9a46cfdee68c4ed0ad43068de58b5a8d
+status: 2
+status_message: null

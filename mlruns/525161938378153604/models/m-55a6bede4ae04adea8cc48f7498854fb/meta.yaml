@@ -1,0 +1,10 @@
+artifact_location: file:C:/Users/user/Desktop/Mon projet de Detection de suspect/mlruns/525161938378153604/models/m-55a6bede4ae04adea8cc48f7498854fb/artifacts
+creation_timestamp: 1783278258887
+experiment_id: '525161938378153604'
+last_updated_timestamp: 1783278292804
+model_id: m-55a6bede4ae04adea8cc48f7498854fb
+model_type: null
+name: RandomForest
+source_run_id: 1d814f4a657c47129f4715fa9838e21d
+status: 2
+status_message: null
