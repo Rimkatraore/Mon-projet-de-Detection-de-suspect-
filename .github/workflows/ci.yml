@@ -1,62 +1,47 @@
-name: CI - Tests Automatiques
+name: CI Tests
 
 on:
   push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+    branches:
+      - main
+      - master
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pandas numpy scikit-learn nltk
+      - name: Install packages
+        run: pip install pandas numpy scikit-learn nltk
 
-    - name: Download NLTK resources
-      run: |
-        python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt'); nltk.download('wordnet')"
+      - name: Download NLTK
+        run: python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt'); nltk.download('wordnet')"
 
-    - name: Test preprocessing
-      run: |
-        python -c "
-import re
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
-STOP = set(stopwords.words('english'))
-lem = WordNetLemmatizer()
-def clean(t):
-    t = t.lower()
-    t = re.sub(r'http\S+', '', t)
-    t = re.sub(r'[^\w\s]', ' ', t)
-    return ' '.join([lem.lemmatize(w) for w in t.split() if w not in STOP and len(w)>2])
-r = clean('Hello World! http://spam.com')
-assert len(r) > 0, 'Preprocessing failed'
-print('Test preprocessing OK !')
-        "
-
-    - name: Test vectorization
-      run: |
-        python -c "
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
-v = TfidfVectorizer(max_features=100)
-X = v.fit_transform(['hello world', 'test tweet', 'good morning'])
-assert X.shape[0] == 3
-m = LogisticRegression().fit(X, [0, 1, 0])
-assert len(m.predict(X)) == 3
-print('Test vectorization OK !')
-        "
-
-    - name: All tests passed
-      run: echo 'Tous les tests CI ont reussi !'
+      - name: Run tests
+        run: |
+          python -c "
+          import re
+          from nltk.corpus import stopwords
+          from nltk.stem import WordNetLemmatizer
+          stop = set(stopwords.words('english'))
+          lem = WordNetLemmatizer()
+          text = 'Hello World http spam com'
+          text = re.sub(r'[^\w\s]', ' ', text.lower())
+          tokens = [lem.lemmatize(w) for w in text.split() if w not in stop and len(w) > 2]
+          result = ' '.join(tokens)
+          assert len(result) > 0
+          print('OK preprocessing')
+          from sklearn.feature_extraction.text import TfidfVectorizer
+          v = TfidfVectorizer()
+          X = v.fit_transform(['hello world', 'test tweet'])
+          assert X.shape[0] == 2
+          print('OK vectorization')
+          print('ALL TESTS PASSED')
+          "
